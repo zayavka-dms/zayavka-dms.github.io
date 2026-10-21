@@ -27,6 +27,8 @@
   --accent-ink: #ffffff;
   --accent-soft: #e4e8f8;
   --warn: #8f5300;
+  --warn-soft: #fbf0df;
+  --warn-line: #e8cfa6;
   --ok: #1f6b43;
   --field: #ffffff;
   --paper-muted: #687084;
@@ -41,7 +43,8 @@
   :root {
     --ground: #121419; --surface: #1a1d25; --paper: #ffffff; --ink: #e7e9f0; --muted: #a2a9bb;
     --rule: #2e3341; --accent: #9eabff; --accent-ink: #10142b; --accent-soft: #232a48;
-    --warn: #f1b45d; --ok: #74d39e; --field: #12141a; --scrim: rgba(0, 0, 0, .65);
+    --warn: #f1b45d; --warn-soft: #33271a; --warn-line: #5b4529;
+    --ok: #74d39e; --field: #12141a; --scrim: rgba(0, 0, 0, .65);
     --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px rgba(0, 0, 0, .35);
     color-scheme: dark;
   }
@@ -81,6 +84,29 @@ h1 { margin: 0; font: 700 clamp(24px, 6vw, 32px)/1.15 var(--font-doc); text-wrap
 .privacy p:last-child { margin-bottom: 0; }
 .privacy .tip { color: var(--muted); font-size: 13px; }
 
+/* «Как пользоваться»: свернуто по умолчанию */
+.howto {
+  margin: 0 0 18px; max-width: 760px;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+}
+.howto summary {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px; min-height: 48px;
+  list-style: none; cursor: pointer; font: 600 15px/1.3 var(--font-ui); color: var(--ink);
+}
+.howto summary::-webkit-details-marker { display: none; }
+.howto summary svg { width: 24px; height: 24px; color: var(--accent); flex: none; }
+.howto summary::after {
+  content: ''; margin-left: auto; flex: none; width: 8px; height: 8px;
+  border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg) translate(-2px, -2px);
+}
+.howto[open] summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+.howto-in { padding: 0 14px 14px 48px; font-size: 14px; }
+.howto ol, .howto ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.howto li::marker { color: var(--muted); }
+.howto-sub { margin: 14px 0 6px; font-weight: 600; }
+@media (max-width: 420px) { .howto-in { padding-left: 14px; } }
+@media (prefers-reduced-motion: no-preference) { .howto summary::after { transition: transform .15s; } }
+
 .mailnote {
   display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start;
   margin: 0 0 18px; padding: 12px 14px; max-width: 760px;
@@ -96,6 +122,41 @@ h1 { margin: 0; font: 700 clamp(24px, 6vw, 32px)/1.15 var(--font-doc); text-wrap
   padding: 6px 10px; background: var(--field); border: 1px solid var(--rule); border-radius: 6px;
 }
 .btn.small { min-height: 36px; padding: 0 12px; font-size: 14px; }
+.mail-label { margin: 10px 0 4px; }
+
+/* подсказки: падеж, дата */
+.fix {
+  display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center;
+  padding: 8px 10px; background: var(--warn-soft); border: 1px solid var(--warn-line); border-radius: 8px;
+}
+.fix-text { margin: 0; flex: 1 1 220px; min-width: 0; font-size: 14px; overflow-wrap: anywhere; }
+.fix-text b { font-weight: 600; }
+
+/* частые формулировки и недавние тексты */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  min-height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule);
+  background: var(--field); color: var(--ink); font: 500 14px/1.2 var(--font-ui); cursor: pointer;
+}
+.chip:active { background: var(--accent-soft); }
+.recent { display: grid; gap: 6px; }
+.sublabel { font-size: 13px; font-weight: 600; color: var(--muted); }
+.recent-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.recent-item {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+  border: 1px solid var(--rule); border-radius: 8px; background: var(--field);
+}
+.recent-use { min-width: 0; text-align: left; background: transparent; border: 0; padding: 8px 10px; cursor: pointer; color: var(--ink); }
+.recent-use .clamp {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font: 400 14px/1.35 var(--font-doc);
+}
+
+details.how { font-size: 14px; }
+details.how summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+details.how p { margin: 6px 0 0; color: var(--muted); }
+.shrink { margin-top: 2px; }
+.foot { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 18px; font-size: 12px; color: var(--muted); }
 .layout { display: grid; gap: 20px; align-items: start; }
 @media (min-width: 900px) { .layout { grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); } }
 
@@ -224,6 +285,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
 .crop-wrap { background: #555b6b; border-radius: 8px; overflow: hidden; display: grid; place-items: center; touch-action: none; }
 .crop-wrap canvas { display: block; touch-action: none; cursor: crosshair; max-width: 100%; }
 .check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; }
+.field > label.check { font-weight: 400; font-size: 14px; }
 .check input { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--accent); }
 .result { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .result .sig-thumb { width: 180px; height: 84px; }
@@ -239,15 +301,41 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   <header class="top">
     <p class="eyebrow">АО «ЦППГГ» → ООО «Газпром Персонал»</p>
     <h1>Заявка на гарантийное письмо</h1>
-    <p class="sub">Услуга 16 по Каталогу: гарантийное письмо АО «СОГАЗ» по ДМС. Заполните поля, добавьте приложения и отправьте один PDF.</p>
+    <p class="sub" id="sub">Услуга 16 по Каталогу: гарантийное письмо АО «СОГАЗ» по ДМС. Заполните поля, добавьте приложения и отправьте один PDF.</p>
   </header>
+
+  <details class="howto" id="howto">
+    <summary>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.1-2.4 3.6"/><path d="M12 16.9v.1"/></svg>
+      <span>Как пользоваться страницей</span>
+    </summary>
+    <div class="howto-in">
+      <ol>
+        <li><b>ФИО и должность</b> впишите в родительном падеже: «в лице Иванова Ивана Ивановича, ведущего юрисконсульта…». Если написать в именительном, страница предложит исправить.</li>
+        <li><b>Дата</b> ставится сегодняшняя, при необходимости ее можно поменять.</li>
+        <li><b>Текст после «по ДМС»</b>: на что нужно гарантийное письмо, в какую клинику, кто пациент. Кнопки над полем вставляют частые слова, точка в конце ставится сама.</li>
+        <li><b>Приложения</b>, если нужны: PDF или фото. Они встанут в один файл после заявки, число листов посчитается само.</li>
+        <li><b>Подпись</b>: нарисуйте пальцем или выделите на фото или скане документа. Она запомнится на этом устройстве.</li>
+        <li><b>«Отправить PDF»</b> открывает меню «Поделиться»: Почта, Telegram, MAX. Для почты адрес и тему письма можно скопировать в плашке «Если отправляете по почте».</li>
+      </ol>
+      <p class="howto-sub">Полезно знать</p>
+      <ul>
+        <li>Лист заявки (на телефоне он под формой, на компьютере справа) показывает будущий PDF, а над ним написано, чего не хватает.</li>
+        <li>Листы приложения подписываются сверху: «Приложение к заявке от …, лист 1 из 3». Это можно выключить.</li>
+        <li>В имени файла есть фамилия, например «Заявка_ДМС_Иванова_21.10.2026.pdf».</li>
+        <li>Если файл получился больше 8 МБ, появится кнопка «Уменьшить размер».</li>
+        <li>После первого открытия страница работает и без интернета.</li>
+        <li>На чужом или общем устройстве включите «Не запоминать» в конце формы.</li>
+      </ul>
+    </div>
+  </details>
 
   <section class="privacy" aria-labelledby="privacyTitle">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg>
     <div>
       <h2 id="privacyTitle">Ваши данные остаются на этом устройстве</h2>
-      <p>ФИО, должность, подпись и текст заявки хранятся только в этом браузере. Страница ничего никуда не отправляет: PDF собирается прямо здесь, и ни автор страницы, ни кто-либо другой ваших данных не видит. Сервер, где лежит страница, знает только о том, что ее открыли.</p>
-      <p>Приложения не сохраняются вовсе. Стереть все сохраненное можно кнопкой «Удалить мои данные» в конце формы.</p>
+      <p>ФИО, должность, подпись, текст заявки и недавние формулировки хранятся только в этом браузере. Страница ничего никуда не отправляет: PDF собирается прямо здесь, и ни автор страницы, ни кто-либо другой ваших данных не видит. Сервер, где лежит страница, знает только о том, что ее открыли.</p>
+      <p>Приложения не сохраняются вовсе. Стереть все сохраненное можно кнопкой «Удалить мои данные» в конце формы. На чужом или общем устройстве включите там же «Не запоминать».</p>
       <p class="tip">Совет для iPhone: откройте ссылку в Safari и добавьте страницу на экран «Домой» (Поделиться → На экран «Домой»). Иначе Safari может стереть сохраненное, если долго не открывать страницу.</p>
     </div>
   </section>
@@ -260,7 +348,12 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
         <span class="mail-addr" id="mailAddr">kadry.cppgg@gazprompersonnel.ru</span>
         <button type="button" class="btn ghost small" id="mailCopy">Копировать</button>
       </div>
-      <p class="tip" id="mailTip">Скопируйте адрес до нажатия «Отправить PDF», затем вставьте его в поле «Кому».</p>
+      <p class="mail-label">Тема письма:</p>
+      <div class="mail-row">
+        <span class="mail-addr" id="mailSubj">Заявка на гарантийное письмо по ДМС</span>
+        <button type="button" class="btn ghost small" id="subjCopy">Копировать</button>
+      </div>
+      <p class="tip" id="mailTip">Скопируйте адрес до нажатия «Отправить PDF», затем вставьте его в поле «Кому». Тему скопируйте так же, если почта не подставила ее сама.</p>
     </div>
   </section>
 
@@ -272,11 +365,19 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
           <label for="fio">ФИО в родительном падеже</label>
           <input type="text" id="fio" placeholder="Иванова Ивана Ивановича" autocapitalize="words" spellcheck="false">
           <p class="hint">Как в тексте заявки: «в лице Иванова Ивана Ивановича».</p>
+          <div class="fix" id="fioFix" hidden>
+            <p class="fix-text" id="fioFixText"></p>
+            <button type="button" class="btn ghost small" id="fioFixBtn">Исправить</button>
+          </div>
         </div>
         <div class="field">
           <label for="pos">Должность в родительном падеже</label>
           <input type="text" id="pos" placeholder="ведущего юрисконсульта Общей практики" autocapitalize="none">
           <p class="hint">Продолжает фразу: «…, ведущего юрисконсульта Общей практики, в соответствии с Договором…».</p>
+          <div class="fix" id="posFix" hidden>
+            <p class="fix-text" id="posFixText"></p>
+            <button type="button" class="btn ghost small" id="posFixBtn">Исправить</button>
+          </div>
         </div>
       </fieldset>
 
@@ -286,16 +387,25 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
           <input type="date" id="date">
           <span class="date-out" id="dateOut"></span>
         </div>
-        <p class="hint">При открытии страницы ставится сегодняшняя.</p>
+        <p class="hint">Ставится сегодняшняя. Если страница осталась открытой до следующего дня, дата обновится сама.</p>
+        <div class="fix" id="dateFix" hidden>
+          <p class="fix-text" id="dateFixText"></p>
+          <button type="button" class="btn ghost small" id="dateToday">Поставить сегодня</button>
+        </div>
       </div>
 
       <div class="field">
         <label for="dms">Текст после «по ДМС»</label>
-        <p class="lead">…получение от АО «СОГАЗ» гарантийного письма <b>по ДМС</b></p>
+        <p class="lead" id="lead">…получение от АО «СОГАЗ» гарантийного письма <b>по ДМС</b></p>
+        <div class="chips" id="chips" role="group" aria-label="Частые формулировки"></div>
         <textarea id="dms" rows="3" placeholder="на консультацию врача-невролога в ООО «Клиника», пациент Иванов И. И."></textarea>
         <div class="row" style="justify-content: space-between">
-          <p class="hint" style="flex: 1 1 200px">Продолжает абзац и переносится как обычный текст. Точка в конце ставится сама.</p>
+          <p class="hint" style="flex: 1 1 200px">Продолжает абзац и переносится как обычный текст. Точка в конце ставится сама. Кнопки над полем вставляют частые слова туда, где стоит курсор.</p>
           <button type="button" class="btn quiet" id="clear">Очистить</button>
+        </div>
+        <div class="recent" id="recentBox" hidden>
+          <span class="sublabel" id="recentLabel">Недавние</span>
+          <ul class="recent-list" id="recentList" aria-labelledby="recentLabel"></ul>
         </div>
       </div>
 
@@ -311,6 +421,13 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
           <span class="att-busy" id="attBusy" role="status"></span>
         </div>
         <p class="hint">Файлы встанут в PDF после заявки в этом порядке. Фото уменьшаются до размера, удобного для почты.</p>
+        <label class="check"><input type="checkbox" id="stamp" checked><span id="stampText">Подписать листы приложения сверху: «Приложение к заявке от …, лист 1 из 1»</span></label>
+        <details class="how">
+          <summary>Как отсканировать бумагу телефоном</summary>
+          <p>iPhone: приложение «Файлы» → «Обзор» → кнопка ⋯ вверху → «Отсканировать документы». Сохраните скан, затем здесь нажмите «Добавить PDF или фото» → «Выбрать файлы».</p>
+          <p>Android: Google Диск → «+» → «Сканировать».</p>
+          <p>Скан получается ровнее и легче обычного фото, его проще прочитать.</p>
+        </details>
       </div>
 
       <div class="field">
@@ -338,9 +455,10 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
 
       <div class="field wipe">
         <span class="label">Мои данные на этом устройстве</span>
+        <label class="check"><input type="checkbox" id="nostore"><span>Не запоминать на этом устройстве. Для чужого или общего телефона и компьютера: после закрытия страницы ничего не останется.</span></label>
         <div class="row">
           <button type="button" class="btn danger" id="wipe">Удалить мои данные</button>
-          <span class="hint" id="wipeHint">Сотрет ФИО, должность, подпись и черновик текста.</span>
+          <span class="hint" id="wipeHint">Сотрет ФИО, должность, подпись, черновик и недавние формулировки.</span>
         </div>
       </div>
     </form>
@@ -355,8 +473,17 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
         <div class="placeholder" id="pvPlaceholder">Загружаю…</div>
       </div>
       <p class="summary" id="summary"></p>
+      <div class="row shrink" id="shrinkRow" hidden>
+        <button type="button" class="btn ghost small" id="shrink">Уменьшить размер</button>
+        <span class="hint">Фото и сканы пересохранятся с меньшим разрешением, текст останется читаемым.</span>
+      </div>
     </section>
   </div>
+
+  <footer class="foot">
+    <span id="ver"></span>
+    <span id="offline"></span>
+  </footer>
 </div>
 
 <div class="bar">
@@ -404,12 +531,14 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
 <script src="vendor/pdf-lib.min.js" defer></script>
 <script src="vendor/fontkit.umd.min.js" defer></script>
 <script src="vendor/pdf.min.js" defer></script>
+<script src="vendor/petrovich.min.js" defer></script>
 <script>
 (function () {
   'use strict';
 
   var WORKER_URL = 'vendor/pdf.worker.min.js';
   var INK = '#1f2a7a';
+  var APP_VERSION = '1.1', APP_DATE = '21.10.2026';
 
   // Геометрия листа (pt, начало координат снизу слева), снята с шаблона в LibreOffice
   var G = {
@@ -422,7 +551,32 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   var MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа',
                 'сентября', 'октября', 'ноября', 'декабря'];
   var KEY = {
-    person: 'zayavka-dms:person', draft: 'zayavka-dms:draft', sig: 'zayavka-dms:signature'
+    person: 'zayavka-dms:person', draft: 'zayavka-dms:draft', sig: 'zayavka-dms:signature',
+    recent: 'zayavka-dms:recent', prefs: 'zayavka-dms:prefs', nostore: 'zayavka-dms:nostore'
+  };
+  // Больше этого PDF тяжеловат для почты; уровни сжатия приложений (длинная сторона в px, качество JPEG)
+  var SIZE_WARN = 8 * 1024 * 1024;
+  var SHRINK = [null, { side: 1754, q: 0.7 }, { side: 1240, q: 0.6 }];
+  // Реквизиты договора и услуги. Здесь значения по умолчанию, актуальные страница берет из config.json
+  var CFG = {
+    contract: {
+      title: 'Договором оказания услуг по комплексному кадровому администрированию',
+      number: 'б/н/26-006', date: '12.02.2026'
+    },
+    service: {
+      code: '16', name: 'получение от АО «СОГАЗ» гарантийного письма по ДМС',
+      short: 'гарантийное письмо АО «СОГАЗ» по ДМС'
+    },
+    email: 'kadry.cppgg@gazprompersonnel.ru',
+    subject: 'Заявка на гарантийное письмо по ДМС',
+    phrases: [
+      { label: 'на консультацию врача-…', text: 'на консультацию врача-|' },
+      { label: 'на обследование', text: 'на обследование |' },
+      { label: 'на госпитализацию', text: 'на госпитализацию |' },
+      { label: 'на лечение у стоматолога', text: 'на лечение у стоматолога |' },
+      { label: 'в ООО «…»', text: 'в ООО «|»' },
+      { label: 'пациент …', text: ', пациент |' }
+    ]
   };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -436,7 +590,14 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     modal: $('sigModal'), drawPane: $('drawPane'), cropPane: $('cropPane'), padWrap: $('padWrap'), pad: $('pad'), padClear: $('padClear'),
     cropWrap: $('cropWrap'), cropCv: $('cropCv'), onlyInk: $('onlyInk'), cropReset: $('cropReset'), cropHint: $('cropHint'),
     sigResult: $('sigResult'), sigResultEmpty: $('sigResultEmpty'), sigResultState: $('sigResultState'),
-    sigDone: $('sigDone'), sigCancel: $('sigCancel')
+    sigDone: $('sigDone'), sigCancel: $('sigCancel'),
+    fioFix: $('fioFix'), fioFixText: $('fioFixText'), fioFixBtn: $('fioFixBtn'),
+    posFix: $('posFix'), posFixText: $('posFixText'), posFixBtn: $('posFixBtn'),
+    dateFix: $('dateFix'), dateFixText: $('dateFixText'), dateToday: $('dateToday'),
+    sub: $('sub'), lead: $('lead'), chips: $('chips'), recentBox: $('recentBox'), recentList: $('recentList'),
+    stamp: $('stamp'), stampText: $('stampText'), shrinkRow: $('shrinkRow'), shrink: $('shrink'),
+    nostore: $('nostore'), ver: $('ver'), offline: $('offline'),
+    mailAddr: $('mailAddr'), mailCopy: $('mailCopy'), mailSubj: $('mailSubj'), subjCopy: $('subjCopy'), mailTip: $('mailTip')
   };
 
   // Хранилище браузера на этом устройстве; на сеть ничего не уходит
@@ -446,10 +607,23 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     del: function (k) { try { window.localStorage.removeItem(k); } catch (e) { /* нет хранилища */ } }
   };
   function readJSON(k) { try { return JSON.parse(local.get(k) || 'null'); } catch (e) { return null; } }
+  // Режим «Не запоминать»: на устройство не пишется ничего, кроме самого этого флажка
+  var nostore = local.get(KEY.nostore) === '1';
+  // флажок перечитывается при каждой записи: его могли включить в другой вкладке
+  function store(k, v) {
+    nostore = local.get(KEY.nostore) === '1';
+    return nostore ? false : local.set(k, v);
+  }
 
   // ---------- состояние
   var sig = null;              // {png, w, h, pad}
-  var attachments = [];        // {id, name, kind: 'pdf'|'image', bytes, pages, w, h, thumb}
+  var attachments = [];        // {id, name, kind: 'pdf'|'scan'|'image', bytes, pages, w, h, thumb, level, orig, images}
+  var dateAuto = true;         // дата идет за сегодняшним днем, пока ее не поменяли вручную
+  var recent = [];             // недавние тексты после «по ДМС»
+  var shrinkFrom = 0;          // размер PDF до уменьшения, чтобы показать разницу
+  var dmsTouched = false;      // в поле текста уже ставили курсор
+  var cfgState = 'loading';    // реквизиты из config.json: 'loading' | 'ok' | 'default' (не загрузились)
+  var busy = false;            // идет отправка или скачивание
   var attSeq = 0, attPending = 0;
   var sheetsAuto = true;
   var stateVer = 0;
@@ -471,9 +645,14 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     var p = parseISO(iso);
     return '«' + pad2(p.d) + '» ' + MONTHS[p.m - 1] + ' ' + p.y + ' г.';
   }
-  function fileName(iso) {
+  function dotDate(iso) {
     var p = parseISO(iso);
-    return 'Заявка_ДМС_' + pad2(p.d) + '.' + pad2(p.m) + '.' + p.y + '.pdf';
+    return pad2(p.d) + '.' + pad2(p.m) + '.' + p.y;
+  }
+  // Фамилия в имени файла помогает кадровой службе: «Заявка_ДМС_Петровой_21.10.2026.pdf»
+  function fileName(iso) {
+    var sn = fileSurname();
+    return 'Заявка_ДМС_' + (sn ? sn + '_' : '') + dotDate(iso) + '.pdf';
   }
   function sheetsWord(n) { return (n % 10 === 1 && n % 100 !== 11) ? 'листе' : 'листах'; }
   function pagesWord(n) {
@@ -592,11 +771,13 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     var pos = trimEndPunct(cleanText(els.pos.value, charset));
     var body = cleanText(els.dms.value, charset);
     var blank = '________________';
-    var text = 'АО «ЦППГГ» (далее – Заказчик), в лице ' + (fio || blank) + ', ' + (pos || blank) +
-      ', в соответствии с Договором оказания услуг по комплексному кадровому администрированию № б/н/26-006 ' +
-      'от 12.02.2026, настоящим обращается к ООО «Газпром Персонал» (далее – Исполнитель) с настоящей ' +
-      'заявкой на оказание следующих услуг: КОД по Каталогу услуг: 16, наименование услуги: получение от АО ' +
-      '«СОГАЗ» гарантийного письма по ДМС' + (body ? ' ' + finishSentence(body) : ' ' + blank + '.');
+    var C = CFG;
+    var text = cleanText('АО «ЦППГГ» (далее – Заказчик), в лице ' + (fio || blank) + ', ' + (pos || blank) +
+      ', в соответствии с ' + C.contract.title + ' № ' + C.contract.number + ' от ' + C.contract.date +
+      ', настоящим обращается к ООО «Газпром Персонал» (далее – Исполнитель) с настоящей ' +
+      'заявкой на оказание следующих услуг: КОД по Каталогу услуг: ' + C.service.code +
+      ', наименование услуги: ' + C.service.name +
+      (body ? (/^[,;:.]/.test(body) ? '' : ' ') + finishSentence(body) : ' ' + blank + '.'), charset);
     var lay = layout(text, font, size, G.x1 - G.x0);
     lay.lines.forEach(function (ln, i) {
       var y = G.firstY - i * G.lead;
@@ -652,31 +833,81 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   }
 
   // ---------- итоговый файл: заявка и приложения
-  async function assemble(appBytes) {
+  // list: снимок приложений на момент сборки (пользователь может менять список, пока PDF собирается)
+  async function assemble(appBytes, list) {
     var L = window.PDFLib;
     var out = await L.PDFDocument.load(appBytes, { updateMetadata: false });
-    for (var i = 0; i < attachments.length; i++) {
-      var a = attachments[i];
+    var total = list.reduce(function (s, a) { return s + a.pages; }, 0), k = 0;
+    var stamp = els.stamp.checked && total ? await makeStamper(out, total) : null;
+    for (var i = 0; i < list.length; i++) {
+      var a = list[i];
       if (a.kind === 'pdf') {
         var src;
         try { src = await L.PDFDocument.load(a.bytes, { updateMetadata: false }); }
         catch (e) { throw new Error('не открылся файл «' + a.name + '»'); }
         try { src.getForm().flatten({ updateFieldAppearances: false }); } catch (e) { /* без полей формы */ }
         var pages = await out.copyPages(src, src.getPageIndices());
-        pages.forEach(function (p) { out.addPage(p); });
+        for (var j = 0; j < pages.length; j++) {
+          out.addPage(pages[j]);
+          if (stamp) { stamp(pages[j], ++k); }
+        }
+      } else if (a.kind === 'scan') {
+        // PDF после уменьшения: каждая страница уже картинка нужного размера
+        for (var q = 0; q < a.images.length; q++) {
+          var im = a.images[q], sp = out.addPage([im.wPt, im.hPt]);
+          sp.drawImage(await out.embedJpg(im.bytes), { x: 0, y: 0, width: im.wPt, height: im.hPt });
+          if (stamp) { stamp(sp, ++k); }
+        }
       } else {
         var img = await out.embedJpg(a.bytes);
         var land = a.w > a.h;
         var PW = land ? A4[1] : A4[0], PH = land ? A4[0] : A4[1];
         var s = Math.min((PW - 2 * PHOTO_MARGIN) / a.w, (PH - 2 * PHOTO_MARGIN) / a.h);
         var dw = a.w * s, dh = a.h * s;
-        out.addPage([PW, PH]).drawImage(img, { x: (PW - dw) / 2, y: (PH - dh) / 2, width: dw, height: dh });
+        var pg = out.addPage([PW, PH]);
+        pg.drawImage(img, { x: (PW - dw) / 2, y: (PH - dh) / 2, width: dw, height: dh });
+        if (stamp) { stamp(pg, ++k); }
       }
     }
     return out.save({ updateMetadata: false });
   }
+  // Надпись в правом верхнем углу листа приложения так, как лист виден на экране:
+  // учитываются поворот страницы (/Rotate) и смещенная видимая область (CropBox)
+  async function makeStamper(doc, total) {
+    var L = window.PDFLib;
+    doc.registerFontkit(window.fontkit);
+    var font = await doc.embedFont(fontBytes, { subset: true });
+    var day = dotDate(els.date.value || todayISO());
+    var gray = L.rgb(0.36, 0.38, 0.44);
+    return function (page, k) {
+      var text = 'Приложение к заявке от ' + day + ', лист ' + k + ' из ' + total;
+      var rot = (((page.getRotation().angle || 0) % 360) + 360) % 360;
+      if (rot % 90) { rot = 0; }
+      var c = page.getCropBox();   // у «перевернутой» рамки ширина и высота отрицательные
+      var b = { x: Math.min(c.x, c.x + c.width), y: Math.min(c.y, c.y + c.height), width: Math.abs(c.width), height: Math.abs(c.height) };
+      var turned = rot === 90 || rot === 270;
+      var vw = turned ? b.height : b.width, vh = turned ? b.width : b.height;
+      var size = 8, m = 12;
+      var tw = font.widthOfTextAtSize(text, size);
+      if (tw > vw - 2 * m) { size = Math.max(4, size * (vw - 2 * m) / tw); tw = font.widthOfTextAtSize(text, size); }
+      // начало строки в координатах видимого листа (u вправо, v вверх) и перевод в координаты страницы
+      var u = vw - m - tw, v = vh - m - size * 0.75, x, y;
+      if (rot === 90) { x = b.x + b.width - v; y = b.y + u; }
+      else if (rot === 180) { x = b.x + b.width - u; y = b.y + b.height - v; }
+      else if (rot === 270) { x = b.x + v; y = b.y + b.height - u; }
+      else { x = b.x + u; y = b.y + v; }
+      page.drawText(text, { x: x, y: y, size: size, font: font, color: gray, rotate: L.degrees(rot) });
+    };
+  }
   function attachmentPages() { return attachments.reduce(function (s, a) { return s + a.pages; }, 0); }
-  function ready(r) { return r && !r.missing.length && !r.tooLong && attPending === 0; }
+  function ready(r) { return r && !r.missing.length && !r.tooLong && attPending === 0 && cfgState !== 'loading'; }
+  function notReadyText() {
+    if (attPending) { return 'Дождитесь, пока обработаются файлы.'; }
+    if (cfgState === 'loading') { return 'Загружаю реквизиты договора, нажмите через пару секунд.'; }
+    if (app && app.missing.length) { return 'Заполните: ' + app.missing.join(', ') + '.'; }
+    if (app && app.tooLong) { return 'Текст слишком длинный для одного листа.'; }
+    return 'PDF пока не собран, нажмите еще раз.';
+  }
 
   async function ensureFinal() {
     if (timer) { clearTimeout(timer); timer = null; await refresh(); }
@@ -684,11 +915,12 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     if (!ready(app)) { return null; }
     if (finalRes && finalRes.ver === app.ver) { return finalRes; }
     if (finalJob && finalJob.ver === app.ver) { return finalJob.promise; }
-    var cur = app;
+    var cur = app, list = attachments.slice();
     var promise = (async function () {
-      var bytes = attachments.length ? await assemble(cur.bytes) : cur.bytes;
+      var bytes = list.length ? await assemble(cur.bytes, list) : cur.bytes;
       var res = {
-        ver: cur.ver, name: cur.name, size: bytes.length, pages: 1 + attachmentPages(),
+        ver: cur.ver, name: cur.name, size: bytes.length,
+        pages: 1 + list.reduce(function (s, a) { return s + a.pages; }, 0),
         blob: new Blob([bytes], { type: 'application/pdf' })
       };
       if (cur.ver === stateVer) { finalRes = res; showSummary(res); }
@@ -700,8 +932,16 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   }
   function showSummary(res) {
     var t = 'Итог: ' + res.pages + ' ' + pagesWord(res.pages) + ', ' + fmtSize(res.size) + '.';
-    if (res.size > 20 * 1024 * 1024) { t += ' Для почты файл может быть великоват.'; }
+    if (shrinkFrom) {
+      if (shrinkFrom > res.size) { t += ' До уменьшения было ' + fmtSize(shrinkFrom) + '.'; }
+      shrinkFrom = 0;
+    }
+    var big = res.size > SIZE_WARN;
+    if (big) { t += ' Для почты тяжеловато: письма больше 10 МБ доходят не всегда.'; }
     els.summary.textContent = t;
+    var can = big && canShrink();
+    els.shrinkRow.hidden = !can;
+    if (can) { els.shrink.textContent = attachments.some(function (a) { return a.level; }) ? 'Уменьшить еще' : 'Уменьшить размер'; }
   }
 
   // ---------- pdf.js: предпросмотр и картинки страниц
@@ -710,10 +950,19 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     if (lib) { lib.GlobalWorkerOptions.workerSrc = WORKER_URL; }
     return lib;
   }
+  // Шрифты, которых нет внутри PDF, берутся из системы (иначе такой текст пропал бы с картинки страницы);
+  // для значков Symbol и ZapfDingbats (галочки в бланках) лежат свои файлы
+  var STD_FONTS = new URL('vendor/standard_fonts/', document.baseURI).href;
+  function openPdf(lib, bytes) {
+    return lib.getDocument({
+      data: bytes.slice(), isEvalSupported: false,
+      disableFontFace: false, useSystemFonts: true, standardFontDataUrl: STD_FONTS
+    }).promise;
+  }
   async function renderPage(bytes, pageNo, widthPx, cropBottomPt) {
     var lib = pdfjs();
     if (!lib) { throw new Error('нет pdf.js'); }
-    var pdf = await lib.getDocument({ data: bytes.slice(), isEvalSupported: false, disableFontFace: true }).promise;
+    var pdf = await openPdf(lib, bytes);
     try {
       var page = await pdf.getPage(pageNo);
       var base = page.getViewport({ scale: 1 });
@@ -762,6 +1011,8 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       if (dropped) { notes.push('часть символов пропущена: их нет в шрифте'); }
       if (r.unpaired) { notes.push('непарная кавычка или скобка'); }
       if (r.tooLong) { notes.push('текст слишком длинный для одного листа'); }
+      if (cfgState === 'loading') { notes.push('загружаю реквизиты договора'); }
+      else if (cfgState === 'default') { notes.push('не удалось обновить реквизиты договора, сверьте номер и дату в тексте'); }
       if (attachments.length && sheetsNumber() !== attachmentPages()) { notes.push('число листов не совпадает с файлами (' + attachmentPages() + ')'); }
       els.pvState.textContent = notes.length ? notes.join('; ') : 'Готово к отправке';
       els.pvState.className = 'pv-state' + (notes.length ? ' warn' : '');
@@ -769,7 +1020,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       catch (e) { els.pvPlaceholder.hidden = false; els.pvPlaceholder.textContent = 'Предпросмотр недоступен, но PDF собирается.'; }
       clearTimeout(finalTimer);
       if (ok) { finalTimer = setTimeout(function () { ensureFinal().catch(function () {}); }, 700); }
-      else { els.summary.textContent = ''; }
+      else { els.summary.textContent = ''; els.shrinkRow.hidden = true; }
     } catch (e) {
       if (ver !== stateVer) { return; }
       app = null;
@@ -783,13 +1034,15 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     stateVer++;
     finalRes = null;
     els.summary.textContent = '';
+    els.shrinkRow.hidden = true;
     clearTimeout(timer);
     timer = setTimeout(function () { timer = null; refresh(); }, 350);
   }
 
   // ---------- сохранение полей на устройстве
-  function savePerson() { local.set(KEY.person, JSON.stringify({ fio: els.fio.value, pos: els.pos.value })); }
-  function saveDraft() { local.set(KEY.draft, JSON.stringify({ dms: els.dms.value })); }
+  function savePerson() { store(KEY.person, JSON.stringify({ fio: els.fio.value, pos: els.pos.value })); }
+  function saveDraft() { store(KEY.draft, JSON.stringify({ dms: els.dms.value })); }
+  function savePrefs() { store(KEY.prefs, JSON.stringify({ stamp: els.stamp.checked })); }
   function loadSaved() {
     var p = readJSON(KEY.person);
     if (p) { els.fio.value = p.fio || ''; els.pos.value = p.pos || ''; }
@@ -797,10 +1050,332 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     if (d) { els.dms.value = d.dms || ''; }
     var s = readJSON(KEY.sig);
     if (s && s.png) { sig = { png: s.png, w: s.w, h: s.h, pad: s.pad }; }
+    var r = readJSON(KEY.recent);
+    recent = Array.isArray(r) ? r.filter(function (x) { return typeof x === 'string' && x.trim(); }).slice(0, 6) : [];
+    var pr = readJSON(KEY.prefs);
+    els.stamp.checked = !(pr && pr.stamp === false);
   }
   function grow() {
     els.dms.style.height = 'auto';
     els.dms.style.height = Math.max(96, els.dms.scrollHeight + 2) + 'px';
+  }
+
+  // ---------- ФИО и должность: проверка падежа и подсказка
+  // По отчеству понятны порядок слов и пол; родительный падеж ФИО ставит petrovich (vendor/petrovich.min.js, MIT)
+  var RE_MID = /(ич|ича|вна|вны|чна|чны)$/;
+  var MALE_A = /^(никита|илья|фома|лука|кузьма|савва|данила|гаврила|мина|иона|фока)$/;
+  function splitWords(t) { t = String(t || '').replace(/\s+/g, ' ').trim(); return t ? t.split(' ') : []; }
+  function low(s) { return String(s).toLowerCase(); }
+  function normInitials(s) { return s.replace(/\s+/g, '').replace(/\./g, '. ').trim(); }
+  function parseFio(raw) {
+    var w = splitWords(raw), f = { w: w, order: null, surname: '', initials: '', initFirst: false }, m;
+    var t = w.join(' ');
+    // сначала второе слово: имя на -ич или -вна не бывает, а фамилия бывает («Анны Петровны Бабич»)
+    if (w.length === 3 && RE_MID.test(low(w[1]))) { f.order = { first: 0, middle: 1, last: 2 }; }
+    else if (w.length === 3 && RE_MID.test(low(w[2]))) { f.order = { last: 0, first: 1, middle: 2 }; }
+    if (f.order) { f.surname = w[f.order.last]; }
+    else if ((m = /^([А-ЯЁа-яё-]{2,}) ?((?:[А-ЯЁ]\. ?){1,2})$/.exec(t))) { f.surname = m[1]; f.initials = normInitials(m[2]); }
+    else if ((m = /^((?:[А-ЯЁ]\. ?){1,2}) ?([А-ЯЁа-яё-]{2,})$/.exec(t))) { f.surname = m[2]; f.initials = normInitials(m[1]); f.initFirst = true; }
+    else if (w.length) { f.surname = w[0]; }
+    return f;
+  }
+  function midGender(s) { return /(ич|ича)$/.test(low(s)) ? 'm' : 'f'; }
+  // похоже ли слово на именительный падеж (для родительного и несклоняемых: нет)
+  function nomLast(s, g) {
+    var x = low(s);
+    if (g === 'm') { return !/(ых|их|ко|[оеиуюы])$/.test(x) && /[бвгджзклмнпрстфхцчшщьй]$/.test(x); }
+    return !/(ой|ей|[ыи])$/.test(x) && /[ая]$/.test(x);
+  }
+  function nomFirst(s, g) {
+    var x = low(s);
+    if (g === 'm') { return MALE_A.test(x) || /[бвгджзклмнпрстфхцчшщйь]$/.test(x); }
+    return /[аяь]$/.test(x);
+  }
+  function nomMiddle(s) { return /(ич|вна|чна)$/.test(low(s)); }
+  function titleCase(s) {
+    return s.split('-').map(function (p) { return p ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : p; }).join('-');
+  }
+  function likeCase(src, out) {
+    if (src.length > 1 && src === src.toUpperCase() && src !== src.toLowerCase()) { return out.toUpperCase(); }
+    return titleCase(out);
+  }
+  function fioSuggest(raw) {
+    var P = window.petrovich, f = parseFio(raw);
+    if (!f.w.length) { return null; }
+    var out = f.w.slice(), declined = false;
+    if (P && f.order) {
+      var g = midGender(f.w[f.order.middle]), G = g === 'm' ? 'male' : 'female';
+      var tests = { last: nomLast, first: nomFirst, middle: nomMiddle };
+      ['last', 'first', 'middle'].forEach(function (part) {
+        var idx = f.order[part], s = f.w[idx], d = null;
+        if (!tests[part](s, g)) { return; }
+        try { d = P[G][part].genitive(s.toLowerCase()); } catch (e) { d = null; }
+        if (d && d !== s.toLowerCase()) { out[idx] = likeCase(s, d); declined = true; }
+      });
+    } else if (P && f.initials) {
+      var x = low(f.surname), G2 = null, d2 = null;
+      // «-ской» сюда не входит: «Каменской А. А.» скорее уже родительный падеж женской фамилии
+      if (/(ов|ев|ёв|ин|ын|ский|цкий)$/.test(x)) { G2 = 'male'; }
+      else if (/(ская|цкая)$/.test(x)) { G2 = 'female'; }
+      if (G2) { try { d2 = P[G2].last.genitive(x); } catch (e) { d2 = null; } }
+      if (d2 && d2 !== x) {
+        var sn = likeCase(f.surname, d2);
+        out = f.initFirst ? [f.initials, sn] : [sn, f.initials];
+        declined = true;
+      }
+    }
+    if (declined) { return { value: out.join(' '), note: 'Похоже, ФИО в именительном падеже.' }; }
+    if (f.order && f.w.some(function (s) { return /^[а-яё]/.test(s); })) {
+      return { value: f.w.map(function (s) { return likeCase(s, s); }).join(' '), note: 'Фамилия, имя и отчество пишутся с заглавной буквы.' };
+    }
+    return null;
+  }
+
+  // Должность: склоняются слова до главного существительного включительно, остальное уже в нужном падеже
+  // («ведущий юрисконсульт Общей практики» → «ведущего юрисконсульта Общей практики»)
+  var POS_FEM = /^(сестра|медсестра|уборщица|санитарка|няня|кастелянша|буфетчица|машинистка|секретарша|кассирша)$/;
+  var POS_GOVERN = /^(заведующ|управляющ|исполняющ|замещающ|курирующ|возглавляющ)(ий|ая)$/;
+  var POS_PREFIX = /^(вице|экс|обер|унтер|штаб|штабс|лейб|генерал|контр|бизнес|шеф|пресс|арт|медиа|веб|топ|фитнес|интернет|пиар|промо|контент|офис|сервис|проект|продакт)$/;
+  var POS_SKIP = /^(временно|постоянно|[а-яё]{1,4}\.)$/;
+  function adjGen(x) {
+    if (/(ый|ой)$/.test(x) || /[гкх]ий$/.test(x)) { return x.slice(0, -2) + 'ого'; }
+    if (/ий$/.test(x)) { return x.slice(0, -2) + 'его'; }
+    if (/[жшчщ]ая$/.test(x) || /яя$/.test(x)) { return x.slice(0, -2) + 'ей'; }
+    if (/ая$/.test(x)) { return x.slice(0, -2) + 'ой'; }
+    return x;
+  }
+  function isAdjNom(x) { return x.length > 3 && /(ый|ий|ой|ая|яя)$/.test(x); }
+  function isAdjAny(x) { return x.length > 3 && /(ый|ий|ой|ая|яя|ого|его|ей|ую|юю)$/.test(x); }
+  function nounGen(x, fem) {
+    if (fem) {
+      if (/[гкхжшчщ]а$/.test(x)) { return x.slice(0, -1) + 'и'; }
+      if (/а$/.test(x)) { return x.slice(0, -1) + 'ы'; }
+      if (/[яь]$/.test(x)) { return x.slice(0, -1) + 'и'; }
+      return x;
+    }
+    if (/вец$/.test(x) && x.length > 4) { return x.slice(0, -2) + 'ца'; }   // продавец → продавца, но кузнец → кузнеца
+    if (/[бвгджзклмнпрстфхцчшщ]$/.test(x)) { return x + 'а'; }
+    if (/[ьй]$/.test(x)) { return x.slice(0, -1) + 'я'; }
+    return x;
+  }
+  function keepCase(src, out) {
+    var sp = src.split('-'), op = out.split('-');
+    if (sp.length !== op.length) { sp = [src]; op = [out]; }
+    return op.map(function (o, k) {
+      var s = sp[k];
+      if (s.length > 1 && s === s.toUpperCase() && s !== s.toLowerCase()) { return o.toUpperCase(); }
+      return s.charAt(0) !== s.charAt(0).toLowerCase() ? o.charAt(0).toUpperCase() + o.slice(1) : o;
+    }).join('-');
+  }
+  function splitPunct(wd) { var m = /^(.*?)([,;:)»"]*)$/.exec(wd); return [m[1], m[2]]; }
+  function posSuggest(raw) {
+    var w = splitWords(raw);
+    if (!w.length) { return null; }
+    var lw = w.map(function (s) { return low(splitPunct(s)[0]); });
+    var i = 0;
+    while (i < w.length && POS_SKIP.test(lw[i]) && !/^(зам|пом)\.$/.test(lw[i])) { i++; }
+    if (i >= w.length || /^(зам|пом)\.?$/.test(lw[i]) || /^врио$/.test(lw[i])) { return null; }
+    var head = lw[i].split('-').pop(), nom;
+    if (/^\d+-?(й|ый|ий)$/.test(lw[i])) { nom = true; }
+    else if (/ой$/.test(head)) {
+      // «-ой»: им. п. мужского рода («рулевой матрос») или род. п. женского («главной сестры», «горничной»):
+      // именительным считаем, только если дальше идет существительное на согласную
+      var j = i;
+      while (j < w.length && (isAdjAny(lw[j].split('-').pop()) || POS_SKIP.test(lw[j]))) { j++; }
+      nom = j < w.length && /[бвгджзклмнпрстфхцчшщь]$/.test(lw[j]);
+    }
+    else if (isAdjNom(head)) { nom = true; }
+    else if (/[бвгджзклмнпрстфхцчшщь]$/.test(lw[i])) { nom = true; }
+    else { nom = POS_FEM.test(lw[i].split('-')[0]); }
+    if (!nom) { return null; }
+    var out = w.slice(), fem = false;
+    for (; i < w.length; i++) {
+      var sp = splitPunct(w[i]), core = sp[0], x = low(core);
+      if (POS_SKIP.test(x)) { continue; }
+      if (/^\d+-?(й|ый|ий)$/.test(x)) { out[i] = core.replace(/-?(й|ый|ий)$/i, '-го') + sp[1]; continue; }
+      var parts = x.split('-'), last = parts[parts.length - 1];
+      if (isAdjNom(last)) {
+        if (/(ая|яя)$/.test(last)) { fem = true; }
+        parts[parts.length - 1] = adjGen(last);
+        out[i] = keepCase(core, parts.join('-')) + sp[1];
+        if (POS_GOVERN.test(x)) { break; }   // «заведующий складом»: дальше слова уже управляются им
+        continue;
+      }
+      out[i] = keepCase(core, parts.map(function (p, k) {
+        if (k < parts.length - 1 && POS_PREFIX.test(p)) { return p; }   // «генерал-майор»
+        var f2 = fem || POS_FEM.test(p);
+        if (!f2 && /[ая]$/.test(p)) { return p; }                        // уже родительный
+        return nounGen(p, f2);
+      }).join('-')) + sp[1];
+      break;
+    }
+    var res = out.join(' ');
+    return res !== w.join(' ') ? { value: res, note: 'Похоже, должность в именительном падеже.' } : null;
+  }
+  function showFix(box, textEl, s) {
+    box.hidden = !s;
+    box.dataset.value = s ? s.value : '';
+    textEl.textContent = '';
+    if (!s) { return; }
+    textEl.appendChild(document.createTextNode(s.note + ' Для заявки: '));
+    var b = document.createElement('b'); b.textContent = '«' + s.value + '»';
+    textEl.appendChild(b);
+  }
+  function checkCases() {
+    showFix(els.fioFix, els.fioFixText, fioSuggest(els.fio.value));
+    showFix(els.posFix, els.posFixText, posSuggest(els.pos.value));
+    updateSubject();
+  }
+  function applyFix(input, box) {
+    if (!box.dataset.value) { return; }
+    input.value = box.dataset.value;
+    savePerson(); checkCases(); changed();
+  }
+
+  // ---------- тема письма и фамилия для имени файла
+  function senderShort() {
+    var f = parseFio(els.fio.value), w = f.w;
+    if (f.order) {
+      return w[f.order.last] + ' ' + w[f.order.first].charAt(0).toUpperCase() + '. ' + w[f.order.middle].charAt(0).toUpperCase() + '.';
+    }
+    if (f.initials) { return f.surname + ' ' + f.initials; }
+    return w.join(' ');
+  }
+  function mailSubject() { var s = senderShort(); return CFG.subject + (s ? ' от ' + s : ''); }
+  function updateSubject() { els.mailSubj.textContent = mailSubject(); }
+  function fileSurname() {
+    return (parseFio(els.fio.value).surname || '').replace(/[^A-Za-zА-Яа-яЁё-]/g, '').replace(/^-+|-+$/g, '').slice(0, 40);
+  }
+
+  // ---------- частые формулировки и недавние тексты
+  function renderChips() {
+    els.chips.textContent = '';
+    CFG.phrases.forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.textContent = p.label;
+      b.addEventListener('pointerdown', function (e) { e.preventDefault(); });   // курсор остается в поле
+      b.addEventListener('click', function () { insertPhrase(p.text); });
+      els.chips.appendChild(b);
+    });
+    els.chips.hidden = !CFG.phrases.length;
+  }
+  // «|» в шаблоне: где окажется курсор после вставки
+  function insertPhrase(tpl) {
+    var ta = els.dms, v = ta.value;
+    var s = dmsTouched ? ta.selectionStart : v.length, e = dmsTouched ? ta.selectionEnd : v.length;
+    var before = v.slice(0, s), after = v.slice(e);
+    var ins = tpl.indexOf('|') >= 0 ? tpl : tpl + '|';
+    if (/^[,;.]/.test(ins)) {
+      // запятая встает после закрывающей кавычки или скобки, а не внутри
+      var close = /^[»)"]+/.exec(after);
+      if (close) { before += close[0]; after = after.slice(close[0].length); }
+      before = before.replace(/\s+$/, '');
+    } else if (before && !/[\s(«"-]$/.test(before)) {
+      ins = ' ' + ins;
+    }
+    if (after && /^[^\s,.;:)»"]/.test(after) && !/\s$/.test(ins.replace('|', ''))) { ins += ' '; }
+    var caret = before.length + ins.indexOf('|');
+    ta.value = before + ins.replace('|', '') + after;
+    dmsTouched = true;
+    ta.focus();
+    try { ta.setSelectionRange(caret, caret); } catch (x) { /* старый браузер */ }
+    grow(); saveDraft(); changed(); renderRecent();
+  }
+  function renderRecent() {
+    els.recentList.textContent = '';
+    var cur = els.dms.value.replace(/\s+/g, ' ').trim();
+    var items = recent.filter(function (s) { return s !== cur; });
+    els.recentBox.hidden = !items.length;
+    items.forEach(function (s) {
+      var li = document.createElement('li'); li.className = 'recent-item';
+      var use = document.createElement('button'); use.type = 'button'; use.className = 'recent-use';
+      var cl = document.createElement('span'); cl.className = 'clamp'; cl.textContent = s; use.appendChild(cl);
+      use.addEventListener('click', function () { els.dms.value = s; grow(); saveDraft(); changed(); renderRecent(); });
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'icon-btn';
+      del.textContent = '×'; del.title = 'Убрать из недавних'; del.setAttribute('aria-label', 'Убрать из недавних');
+      del.addEventListener('click', function () {
+        recent = recent.filter(function (r) { return r !== s; });
+        store(KEY.recent, JSON.stringify(recent));
+        renderRecent();
+      });
+      li.appendChild(use); li.appendChild(del);
+      els.recentList.appendChild(li);
+    });
+  }
+  function pushRecent() {
+    var t = els.dms.value.replace(/\s+/g, ' ').trim();
+    if (!t) { return; }
+    recent = [t].concat(recent.filter(function (r) { return r !== t; })).slice(0, 6);
+    store(KEY.recent, JSON.stringify(recent));
+    renderRecent();
+  }
+
+  // ---------- дата: сегодняшняя, пока ее не поменяли вручную
+  function updateDateFix() {
+    var v = els.date.value, t = todayISO();
+    els.dateOut.textContent = fmtDate(v || t);
+    if (!v || v === t) { els.dateFix.hidden = true; return; }
+    els.dateFixText.textContent = (v > t ? 'Дата в будущем: ' : 'Дата не сегодняшняя: ') + fmtDate(v);
+    els.dateFix.hidden = false;
+  }
+  function updateStampText() {
+    els.stampText.textContent = 'Подписать листы приложения сверху: «Приложение к заявке от ' +
+      dotDate(els.date.value || todayISO()) + ', лист 1 из ' + Math.max(1, attachmentPages()) + '»';
+  }
+  function onDateInput() {
+    dateAuto = !els.date.value || els.date.value === todayISO();
+    updateDateFix(); updateStampText(); changed();
+  }
+  function tickDate() {
+    if (dateAuto && els.date.value !== todayISO()) { els.date.value = todayISO(); updateStampText(); changed(); }
+    updateDateFix();
+  }
+
+  // ---------- реквизиты из config.json
+  function cfgStr(v, max) { return typeof v === 'string' && v.trim() && v.length <= (max || 300) ? v.replace(/\s+/g, ' ').trim() : null; }
+  function applyConfig(c) {
+    if (!c || typeof c !== 'object') { return; }
+    var k = c.contract || {}, s = c.service || {};
+    CFG.contract.title = cfgStr(k.title) || CFG.contract.title;
+    CFG.contract.number = cfgStr(k.number, 60) || CFG.contract.number;
+    CFG.contract.date = cfgStr(k.date, 30) || CFG.contract.date;
+    CFG.service.code = cfgStr(s.code, 20) || CFG.service.code;
+    CFG.service.name = cfgStr(s.name) || CFG.service.name;
+    CFG.service.short = cfgStr(s.short) || CFG.service.short;
+    var em = cfgStr(c.email, 120);
+    if (em && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { CFG.email = em; }
+    CFG.subject = cfgStr(c.subject, 160) || CFG.subject;
+    if (Array.isArray(c.phrases)) {
+      CFG.phrases = c.phrases.map(function (p) {
+        var text = typeof p === 'string' ? p : p && p.text;
+        if (typeof text !== 'string' || !text.replace('|', '').trim() || text.length > 120) { return null; }
+        var label = p && typeof p.label === 'string' && p.label.trim() ? p.label.trim().slice(0, 40)
+          : text.replace(/\s*\|\s*$/, '').replace('|', '…').replace(/^[,\s]+/, '').trim();
+        return { label: label, text: text };
+      }).filter(Boolean).slice(0, 12);
+    }
+  }
+  // Ждем дольше, чем service worker (2,5 с), чтобы при медленной сети успела прийти хотя бы сохраненная копия
+  async function loadConfig() {
+    var ctl = window.AbortController ? new AbortController() : null;
+    var t = setTimeout(function () { if (ctl) { ctl.abort(); } }, 6000);
+    try {
+      var r = await fetch('config.json', { cache: 'no-cache', signal: ctl ? ctl.signal : undefined });
+      if (r.ok) { applyConfig(await r.json()); cfgState = 'ok'; }
+    } catch (e) { /* остаются значения по умолчанию */ }
+    if (cfgState !== 'ok') { cfgState = 'default'; }
+    clearTimeout(t);
+    renderConfig();
+  }
+  function renderConfig() {
+    els.sub.textContent = 'Услуга ' + CFG.service.code + ' по Каталогу: ' + CFG.service.short +
+      '. Заполните поля, добавьте приложения и отправьте один PDF.';
+    var name = CFG.service.name, m = /^(.*?)(по ДМС)$/.exec(name);
+    els.lead.textContent = '…' + (m ? m[1] : name);
+    if (m) { var b = document.createElement('b'); b.textContent = m[2]; els.lead.appendChild(b); }
+    els.mailAddr.textContent = CFG.email;
+    renderChips();
+    updateSubject();
   }
 
   // ---------- картинки
@@ -860,6 +1435,51 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     var n = attachmentPages();
     els.sheets.value = n > 0 ? String(n) : '';
   }
+  function attSize(a) {
+    return a.kind === 'scan' ? a.images.reduce(function (s, im) { return s + im.bytes.length; }, 0) : a.bytes.length;
+  }
+
+  // ---------- уменьшение размера: фото и сканы пересохраняются с меньшим разрешением
+  function heavy(a) { return attSize(a) / a.pages > (a.kind === 'image' ? 350 : 250) * 1024; }
+  function shrinkable(a) { return (a.level || 0) < 2 && heavy(a) && (a.kind === 'image' || !!window.pdfjsLib); }
+  function canShrink() { return attachments.some(shrinkable); }
+  async function rasterizePdf(bytes, opt, onPage) {
+    var pdf = await openPdf(pdfjs(), bytes);
+    try {
+      var res = [];
+      for (var i = 1; i <= pdf.numPages; i++) {
+        if (onPage) { onPage(i, pdf.numPages); }
+        var page = await pdf.getPage(i);
+        var vp1 = page.getViewport({ scale: 1 });
+        var vp = page.getViewport({ scale: Math.min(4, opt.side / Math.max(vp1.width, vp1.height)) });
+        var cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(vp.width)); cv.height = Math.max(1, Math.round(vp.height));
+        await page.render({ canvasContext: cv.getContext('2d', { alpha: false }), viewport: vp, background: '#ffffff' }).promise;
+        var blob = await canvasBlob(cv, 'image/jpeg', opt.q);
+        if (!blob) { throw new Error('страница не сжалась'); }
+        res.push({ bytes: new Uint8Array(await blob.arrayBuffer()), wPt: vp1.width, hPt: vp1.height });
+        cv.width = 0; cv.height = 0;
+        page.cleanup();
+      }
+      return res;
+    } finally {
+      pdf.destroy();
+    }
+  }
+  async function shrinkOne(a, level, onPage) {
+    var opt = SHRINK[level];
+    if (!a.orig) { a.orig = a.bytes; }   // каждый уровень считается от исходника, а не от уже сжатого
+    if (a.kind === 'image') {
+      var c = await fileToCanvas(new Blob([a.orig], { type: 'image/jpeg' }), opt.side);
+      var blob = await canvasBlob(c, 'image/jpeg', opt.q);
+      if (!blob) { throw new Error('фото не сжалось'); }
+      a.bytes = new Uint8Array(await blob.arrayBuffer()); a.w = c.width; a.h = c.height;
+    } else {
+      a.images = await rasterizePdf(a.orig, opt, onPage);
+      a.kind = 'scan'; a.bytes = null;
+    }
+    a.level = level;
+  }
   function renderAttachments() {
     els.attList.textContent = '';
     els.attEmpty.hidden = attachments.length > 0;
@@ -867,11 +1487,11 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       var li = document.createElement('li'); li.className = 'att';
       var th = document.createElement('div'); th.className = 'att-thumb';
       if (a.thumb) { var im = document.createElement('img'); im.src = a.thumb; im.alt = ''; th.appendChild(im); }
-      else { var b = document.createElement('span'); b.className = 'badge'; b.textContent = a.kind === 'pdf' ? 'PDF' : 'Фото'; th.appendChild(b); }
+      else { var b = document.createElement('span'); b.className = 'badge'; b.textContent = a.kind === 'image' ? 'Фото' : 'PDF'; th.appendChild(b); }
       var tx = document.createElement('div'); tx.className = 'att-text';
       var nm = document.createElement('span'); nm.className = 'att-name'; nm.textContent = a.name;
       var mt = document.createElement('span'); mt.className = 'att-meta';
-      mt.textContent = (a.kind === 'pdf' ? 'PDF' : 'фото') + ' · ' + a.pages + ' стр.';
+      mt.textContent = (a.kind === 'image' ? 'фото' : 'PDF') + ' · ' + a.pages + ' стр. · ' + fmtSize(attSize(a)) + (a.level ? ' · уменьшен' : '');
       tx.appendChild(nm); tx.appendChild(mt);
       var ac = document.createElement('div'); ac.className = 'att-actions';
       function btn(label, text, disabled, fn) {
@@ -885,6 +1505,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       li.appendChild(th); li.appendChild(tx); li.appendChild(ac);
       els.attList.appendChild(li);
     });
+    updateStampText();
   }
   function move(i, d) {
     var j = i + d;
@@ -928,6 +1549,29 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     sheetsAuto = els.sheets.value.trim() === '';
     if (sheetsAuto) { autoSheets(); }
     changed();
+  });
+  els.shrink.addEventListener('click', async function () {
+    var list = attachments.filter(shrinkable);
+    if (attPending || !list.length) { return; }
+    shrinkFrom = finalRes ? finalRes.size : 0;
+    attPending++;
+    els.shrink.disabled = true; els.send.disabled = true; els.download.disabled = true;
+    var problems = [];
+    for (var i = 0; i < list.length; i++) {
+      var a = list[i];
+      els.attBusy.textContent = 'Уменьшаю «' + a.name + '»…';
+      try {
+        await shrinkOne(a, (a.level || 0) + 1, function (p, n) {
+          els.attBusy.textContent = 'Уменьшаю «' + a.name + '»: стр. ' + p + ' из ' + n + '…';
+        });
+      } catch (e) {
+        problems.push(a.name + ': ' + (e && e.message ? e.message : 'ошибка'));
+      }
+    }
+    attPending--;
+    els.attBusy.textContent = problems.length ? 'Не удалось уменьшить. ' + problems.join('; ') : '';
+    els.shrink.disabled = false;
+    renderAttachments(); changed();
   });
 
   // ---------- подпись: обработка картинки (фон долой, обрезка по штрихам)
@@ -1027,9 +1671,9 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   els.sigDone.addEventListener('click', function () {
     if (!candidate) { return; }
     sig = { png: candidate.png, w: candidate.w, h: candidate.h, pad: candidate.pad };
-    var saved = local.set(KEY.sig, JSON.stringify(sig));
+    var saved = store(KEY.sig, JSON.stringify(sig));
     closeModal();
-    showSig(saved ? '' : 'Добавлена, но не сохранилась на устройстве: при следующем открытии добавьте снова');
+    showSig(saved || nostore ? '' : 'Добавлена, но не сохранилась на устройстве: при следующем открытии добавьте снова');
     changed();
   });
 
@@ -1236,7 +1880,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   function showSig(note) {
     if (sig) {
       els.sigImg.src = sig.png; els.sigImg.hidden = false; els.sigEmpty.hidden = true;
-      els.sigState.textContent = note || 'Сохранена на этом устройстве';
+      els.sigState.textContent = note || (nostore ? 'Добавлена, но не запоминается на этом устройстве' : 'Сохранена на этом устройстве');
       els.sigState.className = 'state ' + (note ? 'warn' : 'ok');
       els.sigDel.hidden = false;
     } else {
@@ -1259,11 +1903,13 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       return;
     }
     clearTimeout(wipeArmed); wipeArmed = null;
-    [KEY.person, KEY.draft, KEY.sig].forEach(local.del);
-    try { Object.keys(window.localStorage).forEach(function (k) { if (k.indexOf('zayavka-dms:') === 0) { window.localStorage.removeItem(k); } }); } catch (e) { /* нет хранилища */ }
+    [KEY.person, KEY.draft, KEY.sig, KEY.recent, KEY.prefs].forEach(local.del);
+    // флажок «Не запоминать» остается: он сам по себе ничего о человеке не говорит
+    try { Object.keys(window.localStorage).forEach(function (k) { if (k.indexOf('zayavka-dms:') === 0 && k !== KEY.nostore) { window.localStorage.removeItem(k); } }); } catch (e) { /* нет хранилища */ }
     sig = null; els.fio.value = ''; els.pos.value = ''; els.dms.value = '';
+    recent = [];
     attachments = []; sheetsAuto = true; els.sheets.value = '';
-    renderAttachments(); showSig(); grow();
+    renderAttachments(); renderRecent(); showSig(); grow(); checkCases();
     els.wipe.textContent = 'Удалить мои данные';
     els.wipeHint.textContent = 'Данные удалены с этого устройства.';
     changed();
@@ -1277,80 +1923,154 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
   }
+  // PDF должен совпадать с формой: если ее поменяли, пока файл собирался, собираем еще раз
   async function getFinal() {
-    if (finalRes && app && finalRes.ver === stateVer) { return finalRes; }
-    setMsg('Собираю PDF…');
-    return ensureFinal();
+    for (var tries = 0; tries < 3; tries++) {
+      if (finalRes && finalRes.ver === stateVer) { return finalRes; }
+      setMsg('Собираю PDF…');
+      var res = await ensureFinal();
+      if (!res) { setMsg(notReadyText(), 'warn'); return null; }
+      if (res.ver === stateVer) { return res; }
+    }
+    setMsg('Форма меняется: закончите правку и нажмите еще раз.', 'warn');
+    return null;
   }
-  els.send.addEventListener('click', async function () {
+  // одно действие за раз; секунда паузы после него, чтобы двойное нажатие не дало два файла
+  function once(fn) {
+    return async function () {
+      if (busy) { return; }
+      busy = true;
+      try { await fn(); } finally { setTimeout(function () { busy = false; }, 1000); }
+    };
+  }
+  els.send.addEventListener('click', once(async function () {
     var res;
     try { res = await getFinal(); }
     catch (e) { setMsg('Не удалось собрать PDF: ' + (e && e.message ? e.message : e) + '. Уберите этот файл или замените его.', 'warn'); return; }
     if (!res) { return; }
     var file = null;
     try { file = new File([res.blob], res.name, { type: 'application/pdf' }); } catch (e) { file = null; }
-    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+    // title: почта на части устройств берет его как тему письма, остальные приложения его не показывают
+    var data = file ? { files: [file], title: mailSubject() } : null;
+    if (data && navigator.canShare && navigator.canShare(data)) {
       try {
-        await navigator.share({ files: [file] });
+        await navigator.share(data);
+        pushRecent();
         setMsg('Готово: ' + res.name + ', ' + res.pages + ' ' + pagesWord(res.pages) + '.', 'ok');
       } catch (e) {
         if (e && e.name === 'AbortError') { setMsg('Отправка отменена.'); }
         else if (e && e.name === 'NotAllowedError') { setMsg('Файл готов. Нажмите «Отправить PDF» еще раз.', 'warn'); }
-        else { downloadBlob(res); setMsg('Меню «Поделиться» не открылось, файл скачан.', 'warn'); }
+        else if (e && e.name === 'InvalidStateError') { setMsg('Меню «Поделиться» уже открыто.'); }
+        else { downloadBlob(res); pushRecent(); setMsg('Меню «Поделиться» не открылось, файл скачан.', 'warn'); }
       }
     } else {
       downloadBlob(res);
+      pushRecent();
       setMsg('На этом устройстве нет меню «Поделиться» для файлов, поэтому PDF скачан.', 'warn');
     }
-  });
-  els.download.addEventListener('click', async function () {
+  }));
+  els.download.addEventListener('click', once(async function () {
     var res;
     try { res = await getFinal(); }
     catch (e) { setMsg('Не удалось собрать PDF: ' + (e && e.message ? e.message : e) + '.', 'warn'); return; }
     if (!res) { return; }
     downloadBlob(res);
+    pushRecent();
     setMsg('Скачан ' + res.name + '.', 'ok');
+  }));
+
+  // ---------- адрес и тема письма: копирование
+  function copyText(text, btn, srcEl) {
+    function ok() {
+      btn.textContent = 'Скопировано';
+      setTimeout(function () { btn.textContent = 'Копировать'; }, 2500);
+    }
+    function fallback() {
+      try {
+        var rg = document.createRange(); rg.selectNodeContents(srcEl);
+        var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(rg);
+      } catch (e) { /* выделение недоступно */ }
+      var done = false;
+      try { done = document.execCommand('copy'); } catch (e) { done = false; }
+      if (done) { ok(); }
+      else { els.mailTip.textContent = 'Текст выделен: нажмите «Скопировать» в появившемся меню или удерживайте на нем палец.'; }
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(ok, fallback); }
+    else { fallback(); }
+  }
+  els.mailCopy.addEventListener('click', function () { copyText(CFG.email, els.mailCopy, els.mailAddr); });
+  els.subjCopy.addEventListener('click', function () { copyText(mailSubject(), els.subjCopy, els.mailSubj); });
+
+  // ---------- «Не запоминать на этом устройстве»
+  els.nostore.addEventListener('change', function () {
+    nostore = els.nostore.checked;
+    if (nostore) {
+      local.set(KEY.nostore, '1');
+      [KEY.person, KEY.draft, KEY.sig, KEY.recent, KEY.prefs].forEach(local.del);
+      els.wipeHint.textContent = 'Ничего не сохраняется: после закрытия страницы данные исчезнут.';
+    } else {
+      local.del(KEY.nostore);
+      savePerson(); saveDraft(); savePrefs();
+      if (sig) { store(KEY.sig, JSON.stringify(sig)); }
+      if (recent.length) { store(KEY.recent, JSON.stringify(recent)); }
+      els.wipeHint.textContent = 'Данные снова сохраняются на этом устройстве.';
+    }
+    showSig();
+  });
+  // флажок включили или выключили в другой вкладке
+  window.addEventListener('storage', function (e) {
+    if (e.key !== null && e.key !== KEY.nostore) { return; }
+    var on = local.get(KEY.nostore) === '1';
+    if (on === nostore && els.nostore.checked === on) { return; }
+    nostore = on; els.nostore.checked = on;
+    els.wipeHint.textContent = on ? 'Ничего не сохраняется: после закрытия страницы данные исчезнут.' : 'Данные снова сохраняются на этом устройстве.';
+    showSig();
   });
 
-  // ---------- адрес для почты: копирование
-  var MAIL = 'kadry.cppgg@gazprompersonnel.ru';
-  var mailBtn = document.getElementById('mailCopy'), mailTip = document.getElementById('mailTip'), mailAddr = document.getElementById('mailAddr');
-  function selectAddr() {
-    try {
-      var rg = document.createRange(); rg.selectNodeContents(mailAddr);
-      var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(rg);
-    } catch (e) { /* выделение недоступно */ }
+  // ---------- работа без интернета: копия файлов страницы (без данных) в service worker
+  function registerSW() {
+    if (!('serviceWorker' in navigator) || !window.isSecureContext) { return; }
+    navigator.serviceWorker.register('sw.js')
+      .then(function () { return navigator.serviceWorker.ready; })
+      .then(function () { els.offline.textContent = 'Работает и без интернета'; })
+      .catch(function () { /* страница работает и так, только без офлайна */ });
   }
-  function copiedOk() {
-    mailBtn.textContent = 'Скопировано';
-    setTimeout(function () { mailBtn.textContent = 'Копировать'; }, 2500);
-  }
-  function copyFallback() {
-    selectAddr();
-    var done = false;
-    try { done = document.execCommand('copy'); } catch (e) { done = false; }
-    if (done) { copiedOk(); }
-    else { mailTip.textContent = 'Адрес выделен: нажмите «Скопировать» в появившемся меню или удерживайте палец на адресе.'; }
-  }
-  mailBtn.addEventListener('click', function () {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(MAIL).then(copiedOk, copyFallback);
-    } else {
-      copyFallback();
-    }
-  });
 
   // ---------- запуск
   els.date.value = todayISO();
   els.dateOut.textContent = fmtDate(els.date.value);
+  els.ver.textContent = 'Версия ' + APP_VERSION + ' от ' + APP_DATE;
+  els.nostore.checked = nostore;
+  if (nostore) { els.wipeHint.textContent = 'Ничего не сохраняется: после закрытия страницы данные исчезнут.'; }
   loadSaved();
+  renderConfig();
   renderAttachments();
+  renderRecent();
   showSig();
-  [els.fio, els.pos].forEach(function (el) { el.addEventListener('input', function () { savePerson(); changed(); }); });
-  els.date.addEventListener('input', changed);
-  els.date.addEventListener('change', changed);
-  els.dms.addEventListener('input', function () { grow(); saveDraft(); changed(); });
-  els.clear.addEventListener('click', function () { els.dms.value = ''; grow(); saveDraft(); changed(); els.dms.focus(); });
+  checkCases();
+  var caseTimer = null;
+  [els.fio, els.pos].forEach(function (el) {
+    el.addEventListener('input', function () {
+      savePerson(); changed();
+      clearTimeout(caseTimer); caseTimer = setTimeout(checkCases, 700);
+    });
+    el.addEventListener('blur', function () { clearTimeout(caseTimer); checkCases(); });
+  });
+  els.fioFixBtn.addEventListener('click', function () { applyFix(els.fio, els.fioFix); });
+  els.posFixBtn.addEventListener('click', function () { applyFix(els.pos, els.posFix); });
+  els.date.addEventListener('input', onDateInput);
+  els.date.addEventListener('change', onDateInput);
+  els.dateToday.addEventListener('click', function () {
+    els.date.value = todayISO(); dateAuto = true;
+    updateDateFix(); updateStampText(); changed();
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) { tickDate(); } });
+  window.addEventListener('pageshow', tickDate);
+  setInterval(tickDate, 60000);
+  els.dms.addEventListener('focus', function () { dmsTouched = true; });
+  els.dms.addEventListener('input', function () { grow(); saveDraft(); changed(); renderRecent(); });
+  els.clear.addEventListener('click', function () { els.dms.value = ''; grow(); saveDraft(); changed(); renderRecent(); els.dms.focus(); });
+  els.stamp.addEventListener('change', function () { savePrefs(); changed(); });
   $('form').addEventListener('submit', function (e) { e.preventDefault(); });
   var lastW = 0;
   window.addEventListener('resize', function () {
@@ -1362,6 +2082,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   function start() {
     grow();
     lastW = els.sheet.clientWidth;
+    registerSW();
     if (!window.PDFLib || !window.fontkit) {
       els.pvState.textContent = 'Нет библиотек';
       els.pvPlaceholder.textContent = 'Не загрузились файлы страницы. Проверьте интернет и обновите страницу.';
@@ -1369,7 +2090,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       return;
     }
     if (!window.pdfjsLib) { els.pvPlaceholder.textContent = 'Предпросмотр недоступен, но PDF собирается.'; }
-    changed();
+    loadConfig().then(function () { checkCases(); changed(); });
   }
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', start); }
   else { start(); }
