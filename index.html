@@ -81,6 +81,21 @@ h1 { margin: 0; font: 700 clamp(24px, 6vw, 32px)/1.15 var(--font-doc); text-wrap
 .privacy p:last-child { margin-bottom: 0; }
 .privacy .tip { color: var(--muted); font-size: 13px; }
 
+.mailnote {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start;
+  margin: 0 0 18px; padding: 12px 14px; max-width: 760px;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r);
+}
+.mailnote svg { width: 24px; height: 24px; color: var(--accent); margin-top: 2px; }
+.mailnote h2 { margin: 0 0 4px; font: 600 15px/1.3 var(--font-ui); }
+.mailnote p { margin: 0 0 6px; font-size: 14px; }
+.mailnote .tip { color: var(--muted); font-size: 13px; margin: 6px 0 0; }
+.mail-row { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+.mail-addr {
+  font: 600 15px/1.3 var(--font-ui); user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; min-width: 0;
+  padding: 6px 10px; background: var(--field); border: 1px solid var(--rule); border-radius: 6px;
+}
+.btn.small { min-height: 36px; padding: 0 12px; font-size: 14px; }
 .layout { display: grid; gap: 20px; align-items: start; }
 @media (min-width: 900px) { .layout { grid-template-columns: minmax(320px, 440px) minmax(0, 1fr); } }
 
@@ -234,6 +249,18 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
       <p>ФИО, должность, подпись и текст заявки хранятся только в этом браузере. Страница ничего никуда не отправляет: PDF собирается прямо здесь, и ни автор страницы, ни кто-либо другой ваших данных не видит. Сервер, где лежит страница, знает только о том, что ее открыли.</p>
       <p>Приложения не сохраняются вовсе. Стереть все сохраненное можно кнопкой «Удалить мои данные» в конце формы.</p>
       <p class="tip">Совет для iPhone: откройте ссылку в Safari и добавьте страницу на экран «Домой» (Поделиться → На экран «Домой»). Иначе Safari может стереть сохраненное, если долго не открывать страницу.</p>
+    </div>
+  </section>
+  <section class="mailnote" aria-labelledby="mailTitle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4.5 7 7.5 6 7.5-6"/></svg>
+    <div>
+      <h2 id="mailTitle">Если отправляете по почте</h2>
+      <p>Заявку направляйте на адрес:</p>
+      <div class="mail-row">
+        <span class="mail-addr" id="mailAddr">kadry.cppgg@gazprompersonnel.ru</span>
+        <button type="button" class="btn ghost small" id="mailCopy">Копировать</button>
+      </div>
+      <p class="tip" id="mailTip">Скопируйте адрес до нажатия «Отправить PDF», затем вставьте его в поле «Кому».</p>
     </div>
   </section>
 
@@ -755,6 +782,7 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   function changed() {
     stateVer++;
     finalRes = null;
+    els.summary.textContent = '';
     clearTimeout(timer);
     timer = setTimeout(function () { timer = null; refresh(); }, 350);
   }
@@ -1006,10 +1034,14 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
   });
 
   // ---------- рисование пальцем
-  var pad = { strokes: [], cur: null, w: 0, h: 0, dpr: 1 };
+  var pad = { strokes: [], cur: null, w: 0, h: 0, dpr: 1, lw: 2.4 };
   function padSize() {
     var w = Math.round(els.padWrap.clientWidth || 320);
-    var h = Math.round(Math.max(150, Math.min(260, w * 0.42, window.innerHeight * 0.42)));
+    // поле вдвое выше прежнего, но не выше 70% экрана (в альбомной ориентации)
+    var base = Math.max(150, Math.min(260, w * 0.42, window.innerHeight * 0.42));
+    var h = Math.round(Math.max(150, Math.min(base * 2, window.innerHeight * 0.7)));
+    // толщина линии растет вместе с полем, чтобы в заявке подпись выглядела так же
+    pad.lw = Math.max(2.4, Math.min(4.8, 2.4 * h / 150));
     if (pad.w && pad.h && (pad.w !== w || pad.h !== h)) {
       var sx = w / pad.w, sy = h / pad.h;
       pad.strokes.forEach(function (s) { s.forEach(function (pt) { pt.x *= sx; pt.y *= sy; }); });
@@ -1020,8 +1052,8 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     padDraw();
   }
   function strokePath(g, s, k) {
-    g.lineWidth = 2.4 * k; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = INK; g.fillStyle = INK;
-    if (s.length === 1) { g.beginPath(); g.arc(s[0].x * k, s[0].y * k, 1.3 * k, 0, Math.PI * 2); g.fill(); return; }
+    g.lineWidth = pad.lw * k; g.lineCap = 'round'; g.lineJoin = 'round'; g.strokeStyle = INK; g.fillStyle = INK;
+    if (s.length === 1) { g.beginPath(); g.arc(s[0].x * k, s[0].y * k, pad.lw * 0.55 * k, 0, Math.PI * 2); g.fill(); return; }
     g.beginPath();
     g.moveTo(s[0].x * k, s[0].y * k);
     for (var i = 1; i < s.length - 1; i++) {
@@ -1278,6 +1310,34 @@ input:focus-visible, textarea:focus-visible, button:focus-visible, .btn:focus-wi
     if (!res) { return; }
     downloadBlob(res);
     setMsg('Скачан ' + res.name + '.', 'ok');
+  });
+
+  // ---------- адрес для почты: копирование
+  var MAIL = 'kadry.cppgg@gazprompersonnel.ru';
+  var mailBtn = document.getElementById('mailCopy'), mailTip = document.getElementById('mailTip'), mailAddr = document.getElementById('mailAddr');
+  function selectAddr() {
+    try {
+      var rg = document.createRange(); rg.selectNodeContents(mailAddr);
+      var sl = window.getSelection(); sl.removeAllRanges(); sl.addRange(rg);
+    } catch (e) { /* выделение недоступно */ }
+  }
+  function copiedOk() {
+    mailBtn.textContent = 'Скопировано';
+    setTimeout(function () { mailBtn.textContent = 'Копировать'; }, 2500);
+  }
+  function copyFallback() {
+    selectAddr();
+    var done = false;
+    try { done = document.execCommand('copy'); } catch (e) { done = false; }
+    if (done) { copiedOk(); }
+    else { mailTip.textContent = 'Адрес выделен: нажмите «Скопировать» в появившемся меню или удерживайте палец на адресе.'; }
+  }
+  mailBtn.addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(MAIL).then(copiedOk, copyFallback);
+    } else {
+      copyFallback();
+    }
   });
 
   // ---------- запуск
